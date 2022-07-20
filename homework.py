@@ -135,8 +135,8 @@ class Swimming(Training):
         """Получить среднюю скорость движения."""
         return (
             (
-                self.length_pool *
-                self.count_pool
+                self.length_pool
+                * self.count_pool
             )
             / self.M_IN_KM / self.duration
         )
@@ -154,10 +154,10 @@ class Swimming(Training):
 
 
 WORKOUTS_DATA: Dict[str, Type[Training]] = {
-        'SWM': Swimming,
-        'RUN': Running,
-        'WLK': SportsWalking
-    }
+    'SWM': Swimming,
+    'RUN': Running,
+    'WLK': SportsWalking
+}
 
 
 def read_package(workout_type: str, data: list[str, Tuple[float]]) -> Training:
