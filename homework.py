@@ -163,7 +163,9 @@ WORKOUTS_DATA: Dict[str, Type[Training]] = {
 def read_package(workout_type: str, data: list[str, Tuple[float]]) -> Training:
     """Прочитать данные полученные от датчиков."""
     if workout_type in WORKOUTS_DATA:
+
         return WORKOUTS_DATA[workout_type](*data)
+
     else:
         raise KeyError(workout_type)
 
