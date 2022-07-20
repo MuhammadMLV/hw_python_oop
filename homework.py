@@ -160,7 +160,7 @@ WORKOUTS_DATA: Dict[str, Type[Training]] = {
 }
 
 
-def read_package(workout_type: str, data: list[str, Tuple[float]]) -> Training:
+def read_package(workout_type: str, data: Sequence[float]) -> Training:
     """Прочитать данные полученные от датчиков."""
     if workout_type in WORKOUTS_DATA:
 
