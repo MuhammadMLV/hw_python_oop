@@ -51,7 +51,7 @@ class Training:
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         raise NotImplementedError(
-            'Определите run в %s.' % (self.__class__.__name__))
+            f'Определите get_spent_calories в {self.__class__.__name__}')
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -89,8 +89,8 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    WEIGHT_MULTIPLIER: float = 0.035
-    WEIGHT_SHIFT: float = 0.029
+    WEIGHT_MULTIPLIER_1: float = 0.035
+    WEIGHT_MULTIPLIER_2: float = 0.029
 
     def __init__(self,
                  action: int,
@@ -104,12 +104,12 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         return (
             (
-                self.WEIGHT_MULTIPLIER
+                self.WEIGHT_MULTIPLIER_1
                 * self.weight
                 + (self.get_mean_speed() ** 2 // self.height)
-                * self.WEIGHT_SHIFT
+                * self.WEIGHT_MULTIPLIER_2
                 * self.weight)
-            * (self.duration * self.MIN_IN_H)
+            * self.duration * self.MIN_IN_H
         )
 
 
@@ -160,14 +160,13 @@ WORKOUTS_DATA: Dict[str, Type[Training]] = {
 }
 
 
-def read_package(workout_type: str, data: Sequence[float]) -> Training:
+def read_package(workout_type: str, data: Sequence[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    if workout_type in WORKOUTS_DATA:
+    if workout_type not in WORKOUTS_DATA:
+        raise KeyError(
+            f'Тренировки с id: {workout_type} нет в словаре')
 
-        return WORKOUTS_DATA[workout_type](*data)
-
-    else:
-        raise KeyError(workout_type)
+    return WORKOUTS_DATA[workout_type](*data)
 
 
 def main(training: Training) -> None:
@@ -176,10 +175,11 @@ def main(training: Training) -> None:
 
 
 if __name__ == '__main__':
-    packages: Sequence[Tuple[str, Sequence[float]]] = [
+    packages: Sequence[Tuple[str, Sequence[int]]] = [
         ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
+        ('JMP', [9000, 1, 75, 180]),
     ]
 
     for workout_type, data in packages:
